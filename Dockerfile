@@ -28,8 +28,8 @@ RUN apt update \
           xz-utils \
           zip \
     && mkdir -p /opt/gcc \
-    && curl -s "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/heads/pie-release.tar.gz" | tar xzf - -C /opt/gcc \
-    && curl -s "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/pie-release.tar.gz" | tar xzf - -C /opt/ \
+    && curl "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/heads/pie-release.tar.gz" | tar xzf - -C /opt/gcc \
+    && curl "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/pie-release.tar.gz" | tar xzf - -C /opt/ \
     && ln -sf /opt/clang-${CLANG_VERSION} /opt/clang \
     && mkdir /opt/unpackbootimg \
     && git clone --depth 1 --branch 2022.11.09 https://github.com/osm0sis/mkbootimg.git /opt/unpackbootimg \
