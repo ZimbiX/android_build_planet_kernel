@@ -21,7 +21,7 @@ RUN apt update \
           libncurses5 \
           libssl-dev \
           python-is-python3 \
-          python2 \ 
+          python2 \
           python3 \
           python3-pip \
           wget \
