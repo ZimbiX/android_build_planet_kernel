@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -Eeuo pipefail
+
 docker build -t buildkernel_astro .
 docker run -it \
   -v $(pwd)/out:/out \
