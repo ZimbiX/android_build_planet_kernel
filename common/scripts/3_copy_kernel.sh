@@ -4,7 +4,8 @@ set -Eeuo pipefail
 
 # unpack boot.img
 mkdir -p /var/tmp/bootimg
-/opt/unpackbootimg/unpackbootimg -i "${1:-/opt/common/files/android_boot_a_astro.img}" -o /var/tmp/bootimg
+cp "${1:-/opt/common/files/android_boot_a_astro.img}" /var/tmp/bootimg/boot.img
+/opt/unpackbootimg/unpackbootimg -i /var/tmp/bootimg/boot.img -o /var/tmp/bootimg
 
 # overwrite kernel
 cp \
