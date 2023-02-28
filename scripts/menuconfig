@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+cd "$(dirname "$0")/.."
+
+./scripts/fetch-kernel "${1-}" "${2-}"
+./scripts/build-menuconfig "${1-}"

@@ -1,4 +1,6 @@
-FROM ubuntu:latest
+FROM ubuntu:latest AS dev
+
+WORKDIR /work
 
 ARG CLANG_VERSION=4691093
 
@@ -36,4 +38,6 @@ RUN apt update \
     && cd /opt/unpackbootimg \
     && make CC=gcc
 
-ADD ./common/ /opt/common/
+FROM dev AS final
+
+ADD ./scripts/ /work/scripts/

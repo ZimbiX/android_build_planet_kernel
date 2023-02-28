@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+cd "$(dirname "$0")/.."
+
+./scripts/fetch-kernel "${1-}" "${2-}"
+./scripts/build-kernel "${1-}"
+./scripts/pack-kernel
+./scripts/fix-permissions

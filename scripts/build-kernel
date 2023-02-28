@@ -3,10 +3,10 @@
 set -Eeuo pipefail
 
 # change working directory
-cd /usr/src/kernel
+cd /work/kernel
 
 ARCH=arm64
-PATH=$PATH:/usr/src/kernel/tools
+PATH=$PATH:/work/kernel/tools
 export ANDROID_MAJOR_VERSION ARCH PATH PLATFORM_VERSION
 
 BUILD_CC=/opt/clang/bin/clang
@@ -21,10 +21,11 @@ make -C $(pwd) \
   CC=$BUILD_CC \
   CLANG_TRIPLE=$BUILD_CLANG_TRIPLE \
   CROSS_COMPILE=$BUILD_CROSS_COMPILE \
-  ${1:-k6873v1_64_defconfig}
+  ${2:-k6873v1_64_defconfig}
 
 make -j$(nproc --all) -C $(pwd) \
   O=$(pwd)/out \
   CC=$BUILD_CC \
   CLANG_TRIPLE=$BUILD_CLANG_TRIPLE \
-  CROSS_COMPILE=$BUILD_CROSS_COMPILE
+  CROSS_COMPILE=$BUILD_CROSS_COMPILE \
+  ${1-}
