@@ -2,34 +2,44 @@
 
 set -Eeuo pipefail
 
-set -x
+cd "$(dirname "$0")/.."
 
-# unpack boot.img
-mkdir -p /var/tmp/bootimg
-cp "${1:-stock-boot-images/android_boot_a_astro.img}" /var/tmp/bootimg/boot.img
-/opt/unpackbootimg/unpackbootimg -i /var/tmp/bootimg/boot.img -o /var/tmp/bootimg
+. scripts/script-functions
 
-# overwrite kernel
+stock_boot_image_path="${1:-stock-boot-images/android_boot_a_astro.img}"
+
+info "Unpacking stock boot image: $stock_boot_image_path..."
+
+bootimg=tmp/bootimg
+mkdir -p $bootimg
+cp "$stock_boot_image_path" $bootimg/boot.img
+/opt/unpackbootimg/unpackbootimg -i $bootimg/boot.img -o $bootimg
+
+info "Replacing existing kernel with newly-compiled kernel..."
+
 cp \
-  /work/kernel/out/arch/arm64/boot/Image.gz \
-  /var/tmp/bootimg/boot.img-kernel
+  kernel/out/arch/arm64/boot/Image.gz \
+  $bootimg/boot.img-kernel
 
-# repack boot.img
+info "Re-packing boot image..."
+
 /opt/unpackbootimg/mkbootimg \
-  --base "$(cat /var/tmp/bootimg/boot.img-base)" \
-  --board "$(cat /var/tmp/bootimg/boot.img-board)" \
-  --cmdline "$(cat /var/tmp/bootimg/boot.img-cmdline)" \
-  --dtb /var/tmp/bootimg/boot.img-dtb \
-  --dtb_offset "$(cat /var/tmp/bootimg/boot.img-dtb_offset)" \
-  --hashtype "$(cat /var/tmp/bootimg/boot.img-hashtype)" \
-  --header_version "$(cat /var/tmp/bootimg/boot.img-header_version)" \
-  --kernel /var/tmp/bootimg/boot.img-kernel \
-  --kernel_offset "$(cat /var/tmp/bootimg/boot.img-kernel_offset)" \
-  --os_patch_level "$(cat /var/tmp/bootimg/boot.img-os_patch_level)" \
-  --os_version "$(cat /var/tmp/bootimg/boot.img-os_version)" \
-  --pagesize "$(cat /var/tmp/bootimg/boot.img-pagesize)" \
-  --ramdisk /var/tmp/bootimg/boot.img-ramdisk \
-  --ramdisk_offset "$(cat /var/tmp/bootimg/boot.img-ramdisk_offset)" \
-  --second_offset "$(cat /var/tmp/bootimg/boot.img-second_offset)" \
-  --tags_offset "$(cat /var/tmp/bootimg/boot.img-tags_offset)" \
-  --output /out/boot.img
+  --base            "$(cat $bootimg/boot.img-base)" \
+  --board           "$(cat $bootimg/boot.img-board)" \
+  --cmdline         "$(cat $bootimg/boot.img-cmdline)" \
+  --dtb                    $bootimg/boot.img-dtb \
+  --dtb_offset      "$(cat $bootimg/boot.img-dtb_offset)" \
+  --hashtype        "$(cat $bootimg/boot.img-hashtype)" \
+  --header_version  "$(cat $bootimg/boot.img-header_version)" \
+  --kernel                 $bootimg/boot.img-kernel \
+  --kernel_offset   "$(cat $bootimg/boot.img-kernel_offset)" \
+  --os_patch_level  "$(cat $bootimg/boot.img-os_patch_level)" \
+  --os_version      "$(cat $bootimg/boot.img-os_version)" \
+  --pagesize        "$(cat $bootimg/boot.img-pagesize)" \
+  --ramdisk                $bootimg/boot.img-ramdisk \
+  --ramdisk_offset  "$(cat $bootimg/boot.img-ramdisk_offset)" \
+  --second_offset   "$(cat $bootimg/boot.img-second_offset)" \
+  --tags_offset     "$(cat $bootimg/boot.img-tags_offset)" \
+  --output                 out/boot.img
+
+success "Boot image successfully re-packed with new kernel: out/boot.img"
